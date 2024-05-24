@@ -3,11 +3,7 @@ import styles from '@/app/ui/home.module.css';
 import { lusitana } from '@/app/ui/fonts';
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  AtSymbolIcon,
-  KeyIcon,
-  PencilIcon,
-} from '@heroicons/react/24/outline';
+import { AtSymbolIcon, KeyIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '../ui/button';
 export default function Register() {
@@ -19,6 +15,9 @@ export default function Register() {
       </div>
       <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
         <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
+          <p className="hover:bg-cyan-400 underline">
+            <Link href="/">Go back</Link>
+          </p>{' '}
           <div className="">
             Enter details to register account, if you already have an account,
             you can{' '}

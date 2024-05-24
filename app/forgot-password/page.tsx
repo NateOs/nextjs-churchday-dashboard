@@ -34,7 +34,7 @@ function reset() {
           </div>
 
           <div className="relative"></div>
-          <Button type={'submit'}>Reset Passwo</Button>
+          <Button type={'submit'}>Reset Password</Button>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           {/* Add Hero Images Here */}
@@ -60,4 +60,4 @@ function reset() {
 
 export default reset;
 
-// TODO reset password page && forgot password page
+// TODO typecheck all props
