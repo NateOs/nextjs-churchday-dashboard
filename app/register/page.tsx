@@ -6,6 +6,10 @@ import { Button } from '../ui/button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as zod from 'zod';
+import axios from 'axios';
+import { useState } from 'react';
+import { Toast } from 'flowbite-react';
+import { HiCheck, HiExclamation, HiX } from 'react-icons/hi';
 
 // Define the validation schema using Zod
 const schema = zod
@@ -28,6 +32,8 @@ const schema = zod
 type FormInput = zod.infer<typeof schema>;
 
 export default function Register() {
+  const [data, setData] = useState({});
+  const [isToast, setIsToast] = useState(true);
   const {
     register,
     handleSubmit,
@@ -36,10 +42,41 @@ export default function Register() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormInput> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<FormInput> = (data) => {
+    if (data) {
+      axios
+        .post(process.env.NEXT_PUBLIC_BACKEND_URL + '/auth/register', data)
+        .then(function (response) {
+          setData(response.data);
+
+          //           data
+          // :
+          // msg
+          // :
+          // "user created successfully, check email to verify account"
+          // verificationToken
+          // :
+          // "b6ffe8633c06c9f5da2b1bc61df15d7a9ffa72f8af7f4c08a3373caeb2ec72ffd7af46bf1597b7e
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  };
 
   return (
-    <main className="flex min-h-screen flex-col p-6">
+    <main className="relative flex min-h-screen flex-col p-6">
+      {isToast && (
+        <Toast className="pointer-events-none absolute right-0 top-4 flex items-center justify-center">
+          <div className="pointer-events-auto inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
+            <HiCheck className="h-5 w-5" />
+          </div>
+          <div className="pointer-events-auto ml-3 text-sm font-normal">
+            Item moved successfully.
+          </div>
+          <Toast.Toggle className="pointer-events-auto" />
+        </Toast>
+      )}
       {/* form starts here */}
 
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -146,5 +183,5 @@ export default function Register() {
   );
 }
 
-// TODO data validation with zod and rhf
 // TODO make auth request with axios and interceptor
+// TODO add status toasts
