@@ -1,4 +1,5 @@
 'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { AtSymbolIcon, KeyIcon, PencilIcon } from '@heroicons/react/24/outline';
@@ -6,9 +7,7 @@ import { Button } from '../ui/button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as zod from 'zod';
-import axios from 'axios';
-import { useState } from 'react';
-import { HiCheck, HiExclamation, HiX } from 'react-icons/hi';
+import axios, {AxiosResponse} from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -31,9 +30,12 @@ const schema = zod
   });
 
 type FormInput = zod.infer<typeof schema>;
-
+/**
+ * Register component for user registration.
+ *
+ * @returns {React.FC} - A functional component for user registration.
+ */
 export default function Register() {
-  const [data, setData] = useState({});
   const {
     register,
     handleSubmit,
@@ -45,23 +47,12 @@ export default function Register() {
   const onSubmit: SubmitHandler<FormInput> = (data) => {
     if (data) {
       axios
-        .post(process.env.NEXT_PUBLIC_BACKEND_URL + '/auth/register', data)
-        .then(function (response) {
-          setData(response.data);
-          toast(data?.msg);
-
-          //           data
-          // :
-          // msg
-          // :
-          // "user created successfully, check email to verify account"
-          // verificationToken
-          // :
-          // "b6ffe8633c06c9f5da2b1bc61df15d7a9ffa72f8af7f4c08a3373caeb2ec72ffd7af46bf1597b7e
+        .post(process.env.NEXT_PUBLIC_API_URL + '/auth/register', data)
+        .then(function (response: AxiosResponse<any>) {
+          toast.success('Registration successful, visit email address to verify account');
         })
-        .catch(function (error) {
-          toast(data?.msg);
-
+        .catch((error: any) => {
+          toast.error(error.response?.data?.msg);
           console.log(error);
         });
     }
@@ -175,6 +166,3 @@ export default function Register() {
     </main>
   );
 }
-
-// TODO make auth request with axios and interceptor
-// TODO add status toasts
