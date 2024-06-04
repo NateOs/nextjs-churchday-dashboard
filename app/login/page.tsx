@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,6 +7,9 @@ import { Button } from '../ui/button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as zod from 'zod';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const schema = zod.object({
   email: zod.string().email('Invalid email address'),
@@ -24,10 +27,24 @@ function page() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormInput> = (data) => console.log(data);
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<FormInput> = (data: FormInput) => {
+    axios
+      .post(process.env.NEXT_PUBLIC_API_URL + '/auth/login', data)
+      .then(function (response: AxiosResponse<any>) {
+        toast.success('Login successful, redirecting to dashboard');
+        router.push('/dashboard');
+      })
+      .catch((error: AxiosError) => {
+        toast.error(error.response?.data?.msg);
+        console.log(error);
+      });
+  };
 
   return (
     <main className="flex min-h-screen flex-col p-6">
+      <ToastContainer />
       {/* form starts here */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
@@ -118,3 +135,6 @@ function page() {
 }
 
 export default page;
+
+// TODO: Add protected routes after setting up all the routes
+//
