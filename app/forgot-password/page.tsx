@@ -24,13 +24,11 @@ function reset() {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
         toast.success('Password reset request sent successfully');
       } else {
         throw new Error(`Request failed with status ${response.status}`);
       }
     } catch (error) {
-      console.error('Error sending password reset request:', error);
       toast.error(`Error: ${error?.message ?? 'An unknown error occurred'}`);
     }
   };

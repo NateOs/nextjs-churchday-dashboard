@@ -104,7 +104,7 @@ function page() {
             <p>
               Forgot password?{' '}
               <Link
-                href="/reset-password"
+                href="/forgot-password"
                 className="underline hover:bg-cyan-400"
               >
                 Reset

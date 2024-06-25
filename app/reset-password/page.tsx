@@ -1,28 +1,50 @@
-'use client'
-import AcmeLogo from '@/app/ui/acme-logo';
-import styles from '@/app/ui/home.module.css';
-import { lusitana } from '@/app/ui/fonts';
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { AtSymbolIcon, KeyIcon, PencilIcon } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '../ui/button';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 function ResetPasswordForm() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-	  event.preventDefault();
-	  console.log('working test');
-	  
-    // Perform form submission logic here
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+  const email = searchParams.get('email');
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_API_URL + '/auth/reset-password',
+        {
+          token,
+          email,
+          password: (event.target as HTMLFormElement).newPassword.value,
+        },
+      );
+
+      if (response.status === 200) {
+        toast.success('Password reset request sent successfully');
+        toast.info(response?.data?.msg);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
       <div className="relative">
+        <ToastContainer />
         <input
           className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
           id="userEmail"
-          type="text"
+          type="email"
           name="userEmail"
           placeholder="Enter email address"
           required
